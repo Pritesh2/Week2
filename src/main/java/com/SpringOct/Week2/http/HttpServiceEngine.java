@@ -7,7 +7,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -37,11 +41,34 @@ public class HttpServiceEngine {
         headers.setBasicAuth(clientId, clientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
+        class ConsumerHeaderObject implements Consumer<HttpHeaders>{
 
-        restClient.method(HttpMethod.POST)
+            HttpHeaders applicationHeaders;
+
+            ConsumerHeaderObject(HttpHeaders applicationHeaders)
+            {
+                this.applicationHeaders = applicationHeaders;
+            }
+
+            @Override
+            public void accept(HttpHeaders httpHeaders) {
+                httpHeaders.addAll(this.applicationHeaders);
+            }
+        }
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("grant_type","client_credentials");
+
+
+        String httpResponse = restClient.method(HttpMethod.POST)
                 .uri("https://api-m.sandbox.paypal.com/v1/oauth2/token")
-                .header();
+                .headers(new ConsumerHeaderObject(headers))
+                .body(formData)
+                .retrieve()
+                .body(String.class);
 
-        return "HTTP response";
+        logger.info(" Paypal response : {}", httpResponse);
+
+        return httpResponse;
     }
 }
