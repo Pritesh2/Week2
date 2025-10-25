@@ -26,7 +26,8 @@ public class TokenService {
 
         // TODO : implement logic to get access token
         String response = httpServiceEngine.makeHttpCall();
-        return "Access Token" + response;
+        //return "Access Token" + response;
+        return response;
     }
 
 }

@@ -29,7 +29,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         String accessToken = tokenService.getAccessToken();
         logger.info(" Received token from Token service : {}", accessToken);
-        return "Order created from Payment service";
+        //return "Order created from Payment service";
+        return accessToken;
     }
 
     public void method2()

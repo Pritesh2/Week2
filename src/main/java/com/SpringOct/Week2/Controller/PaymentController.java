@@ -31,7 +31,7 @@ public class PaymentController {
     public String createOrder()
     {
         logger.info("Inside create order method");
-        paymentService.createOrder();
-        return "Order created";
+        String response = paymentService.createOrder();
+        return response;
     }
 }
