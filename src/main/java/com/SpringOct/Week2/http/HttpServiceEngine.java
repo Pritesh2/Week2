@@ -59,16 +59,26 @@ public class HttpServiceEngine {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type","client_credentials");
 
+        try {
+            String httpResponse = restClient.method(HttpMethod.POST)
+                    .uri("https://api-m.sandbox.paypal.com/v1/oauth2/token")
+                    .headers( (HttpHeaders restClientHeader)->{
+                        restClientHeader.addAll(headers);
+                    })
+                    //.headers(new ConsumerHeaderObject(headers))
+                    .body(formData)
+                    .retrieve()
+                    .body(String.class);
 
-        String httpResponse = restClient.method(HttpMethod.POST)
-                .uri("https://api-m.sandbox.paypal.com/v1/oauth2/token")
-                .headers(new ConsumerHeaderObject(headers))
-                .body(formData)
-                .retrieve()
-                .body(String.class);
+            logger.info(" Paypal response : {}", httpResponse);
 
-        logger.info(" Paypal response : {}", httpResponse);
-
-        return httpResponse;
+            return httpResponse;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
+
+/*
+* Functional interface : interface with 1 abstract method
+* */

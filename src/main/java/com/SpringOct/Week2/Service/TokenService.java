@@ -14,6 +14,7 @@ public class TokenService {
 
     private final HttpServiceEngine httpServiceEngine;
 
+    // TODO : In future save it in Redis
     private static String accessToken;
 
     public String getAccessToken()
@@ -25,9 +26,9 @@ public class TokenService {
         }
 
         // TODO : implement logic to get access token
-        String response = httpServiceEngine.makeHttpCall();
+        accessToken = httpServiceEngine.makeHttpCall();
         //return "Access Token" + response;
-        return response;
+        return accessToken;
     }
 
 }
