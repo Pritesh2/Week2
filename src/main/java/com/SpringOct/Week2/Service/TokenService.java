@@ -1,5 +1,6 @@
 package com.SpringOct.Week2.Service;
 
+import com.SpringOct.Week2.Constant.Constant;
 import com.SpringOct.Week2.DTO.HttpRequest;
 import com.SpringOct.Week2.http.HttpServiceEngine;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class TokenService {
         }
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("grant_type","client_credentials");
+        formData.add(Constant.GRANT_TYPE, Constant.CLIENT_CREDENTIALS);
 
         HttpRequest httpRequest = new HttpRequest();
         httpRequest.setHttpMethod(HttpMethod.POST);
