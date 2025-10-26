@@ -1,5 +1,6 @@
 package com.SpringOct.Week2.http;
 
+import com.SpringOct.Week2.DTO.HttpRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class HttpServiceEngine {
 
     private final RestClient restClient;
 
-    public String makeHttpCall()
+    public String makeHttpCall(HttpRequest httpRequest)
     {
         logger.info(" Calling external API ");
 
@@ -34,43 +35,16 @@ public class HttpServiceEngine {
 
         // where to pass client id and secret???
 
-        HttpHeaders headers = new HttpHeaders();
-        String clientId = "AVt7kaDw51ZzYMOSRY-t1iYqjaqbF-P6e5VoKCH6z56nKcryaVHEJcN0G5DkVBD4bJwfFcbmOnutiVqq";
-        String clientSecret = "ELTLzjtQrZVO3S8DxOqWj-SYDgDQe2W87yiogwUMTPA7f7sPoJPDYK34jyY3XFjq-7kKveeLDu9-mXw4";
-
-        headers.setBasicAuth(clientId, clientSecret);
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        class ConsumerHeaderObject implements Consumer<HttpHeaders>{
-
-            HttpHeaders applicationHeaders;
-
-            ConsumerHeaderObject(HttpHeaders applicationHeaders)
-            {
-                this.applicationHeaders = applicationHeaders;
-            }
-
-            @Override
-            public void accept(HttpHeaders httpHeaders) {
-                httpHeaders.addAll(this.applicationHeaders);
-            }
-        }
-
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("grant_type","client_credentials");
-
         try {
-            String httpResponse = restClient.method(HttpMethod.POST)
-                    .uri("https://api-m.sandbox.paypal.com/v1/oauth2/token")
-                    .headers( (HttpHeaders restClientHeader)->{
-                        restClientHeader.addAll(headers);
-                    })
+            String httpResponse = restClient.method(httpRequest.getHttpMethod())
+                    .uri(httpRequest.getUrl())
+                    .headers( (HttpHeaders restClientHeader)-> restClientHeader.addAll(httpRequest.getHttpHeaders()))
                     //.headers(new ConsumerHeaderObject(headers))
-                    .body(formData)
+                    .body(httpRequest.getBody())
                     .retrieve()
                     .body(String.class);
 
-            logger.info(" Paypal response : {}", httpResponse);
+            logger.info(" Paypal response after changing method signature : {}", httpResponse);
 
             return httpResponse;
         } catch (Exception e) {
