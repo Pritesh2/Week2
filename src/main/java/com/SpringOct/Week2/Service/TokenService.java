@@ -5,6 +5,7 @@ import com.SpringOct.Week2.http.HttpServiceEngine;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -22,6 +23,13 @@ public class TokenService {
 
     private final HttpServiceEngine httpServiceEngine;
 
+    @Value("${paypal.outh.url}")
+    private String outhUrl = "";
+    @Value("${paypal.client.id}")
+    private String clientId = "";
+    @Value("${paypal.client.secret}")
+    private String clientSecret = "";
+
     // TODO : In future save it in Redis
     private static String accessToken;
 
@@ -36,9 +44,6 @@ public class TokenService {
         // TODO : implement logic to get access token
 
         HttpHeaders headers = new HttpHeaders();
-        String clientId = "AVt7kaDw51ZzYMOSRY-t1iYqjaqbF-P6e5VoKCH6z56nKcryaVHEJcN0G5DkVBD4bJwfFcbmOnutiVqq";
-        String clientSecret = "ELTLzjtQrZVO3S8DxOqWj-SYDgDQe2W87yiogwUMTPA7f7sPoJPDYK34jyY3XFjq-7kKveeLDu9-mXw4";
-
         headers.setBasicAuth(clientId, clientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -62,7 +67,7 @@ public class TokenService {
 
         HttpRequest httpRequest = new HttpRequest();
         httpRequest.setHttpMethod(HttpMethod.POST);
-        httpRequest.setUrl("https://api-m.sandbox.paypal.com/v1/oauth2/token");
+        httpRequest.setUrl(outhUrl);
         httpRequest.setHttpHeaders(headers);
         httpRequest.setBody(formData);
 
